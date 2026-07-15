@@ -24,7 +24,9 @@ The third-party Store resolver is used only to resolve package metadata by produ
 
 ## Synchronization model
 
-The scheduled check performs one HTTPS metadata `GET` and three HTTPS `HEAD` requests. If the source fingerprints have not changed, it downloads zero installer bodies and performs zero release writes.
+Scheduled synchronization is opt-in. The daily schedule is skipped unless the repository variable `MIRROR_SYNC_ENABLED` is exactly `true`; unset, empty, or any other value keeps it disabled. A manually dispatched workflow always runs, regardless of that variable. For initial setup, run and verify the workflow manually before setting `MIRROR_SYNC_ENABLED=true` under the repository's Actions variables. Unset the variable or set it to `false` to disable later scheduled runs without changing the workflow.
+
+Once enabled, the scheduled check performs one HTTPS metadata `GET` and three HTTPS `HEAD` requests. If the source fingerprints have not changed, it downloads zero installer bodies and performs zero release writes.
 
 When a source changes, only changed installers are downloaded from the source endpoints. Unchanged installers are retrieved from the previous GitHub Release. Every staged asset is hashed locally with SHA-256 before upload; reused assets are additionally compared with the hash recorded by the previous release manifest. The workflow assembles a complete snapshot as a draft, verifies the remote draft's exact asset names and sizes, and only then publishes it as the new `latest` release. Older releases are retained for rollback.
 

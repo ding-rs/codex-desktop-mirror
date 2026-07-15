@@ -14,6 +14,7 @@ concurrency:
 
 jobs:
   sync:
+    if: ${{ github.event_name == 'workflow_dispatch' || vars.MIRROR_SYNC_ENABLED == 'true' }}
     runs-on: windows-latest
     timeout-minutes: 90
     steps:
