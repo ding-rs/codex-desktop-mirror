@@ -21,7 +21,7 @@ const REPOSITORY_PATTERN =
 const TAG_PATTERN = /^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$/;
 const SHA256_PATTERN = /^[0-9a-f]{64}$/;
 const NO_RELEASES_PATTERN = /no releases found/i;
-const RELEASE_NOT_FOUND_PATTERN = /release not found|not found.*release/i;
+const RELEASE_NOT_FOUND_PATTERN = /^\s*release not found\s*$/i;
 const RUN_TOKEN_PATTERN = /^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$/;
 
 function assertRepository(repo) {
@@ -344,7 +344,7 @@ export function createGitHubReleaseAdapter({
       try {
         tag = await viewLatestTag();
       } catch (error) {
-        if (error.noReleases) return null;
+        if (error.noReleases || error.releaseNotFound) return null;
         throw error;
       }
 

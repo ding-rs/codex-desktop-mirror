@@ -600,6 +600,11 @@ test("GitHub adapter rejects malformed repositories before invoking gh", () => {
 test("GitHub adapter treats only an explicit no-releases exit as first run", async () => {
   for (const [stderr, expected] of [
     ["no releases found", null],
+    ["release not found", null],
+    [
+      "HTTP 404: Not Found (https://api.github.com/repos/ding-rs/codex-desktop-mirror/releases/latest)",
+      "reject",
+    ],
     ["HTTP 500", "reject"],
   ]) {
     const fake = fakeExec(async () => {
